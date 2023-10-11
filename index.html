@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="ang.js"></script>
+  </head>
+  <body ng-app="app" ng-controller="cc">
+    <input type="text" ng-model="search" name="" id="">
+    <table>
+      <tr>
+        <th>name</th>
+        <th>pass</th>
+      </tr>
+
+      <tr ng-repeat="i in list | filter: search">
+        <td>{{i.name}}</td>
+        <td>
+          <input
+            type="button"
+            ng-click="display(i)"
+            value="show"
+            name=""
+            id=""
+          />
+        </td>
+        <td>
+          <input type="button" ng-click="del(i)" value="delete" name="" id="" />
+        </td>
+      </tr>
+      <tr>
+        <td>price</td>
+        <td>{{price}}</td>
+      </tr>
+    </table>
+
+    <h1>welcome my house</h1>
+
+    <script>
+      const app = angular.module("app", []);
+      app.controller("cc", function ($scope, $http) {
+        $scope.list = [];
+        $scope.price = 0;
+        $scope.storage = "";
+        $scope.qua = "";
+
+        $scope.getdata = () => {
+          $http.get("/data/api").then((res) => {
+            $scope.list = res.data;
+            console.log(res.data);
+          });
+        };
+
+        $scope.display = (i) => {
+          $scope.price = i.pass;
+        };
+
+        $scope.del = (i) => {
+          $http.delete(`/data/${i._id}`).then(function (res) {
+            $scope.list = res.data;
+            $scope.getdata();
+          });
+        };
+        // $scope.del = (item) => {
+        //   $http.delete(`/data/${item._id}`).then(function (response) {
+        //     $scope.list = response.data;
+        //     $scope.getdata();
+        //   });
+        // };
+
+        $scope.getdata();
+      });
+    </script>
+  </body>
+</html>
